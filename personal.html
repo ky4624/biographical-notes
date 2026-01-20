@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息 - 科技感简历</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 50px;
+            position: relative;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        /* 内容容器 */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            position: relative;
+        }
+
+        /* 个人照片 */
+        .personal-photo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            object-fit: cover;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #00ffff;
+            font-size: 36px;
+        }
+
+        .info-item {
+            margin-bottom: 25px;
+            font-size: 18px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 120px;
+            color: #00ffcc;
+        }
+
+        .info-value {
+            color: #ffffff;
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-50px) translateX(100px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-150px) translateX(150px);
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 返回按钮 -->
+    <a href="index.html" class="back-btn">返回正方体</a>
+
+    <!-- 内容容器 -->
+    <div class="content">
+        <!-- 个人照片 -->
+        <img src="static/photo.jpg" alt="个人照片" class="personal-photo">
+        
+        <h1>个人信息</h1>
+        
+        <div class="info-item">
+            <span class="info-label">姓名：</span>
+            <span class="info-value">王宽堰</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">性别：</span>
+            <span class="info-value">男</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">年龄：</span>
+            <span class="info-value">34岁</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">联系方式：</span>
+            <span class="info-value">13541201047</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">邮箱：</span>
+            <span class="info-value">656151869@qq.com</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">地址：</span>
+            <span class="info-value">成都市锦江区</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">期望职业：</span>
+            <span class="info-value">爬虫开发工程师</span>
+        </div>
+        
+        <div class="info-item">
+            <span class="info-label">个人简介：</span>
+            <span class="info-value">6年excel数据处理经验，4年python爬虫抓取，清洗经验</span>
+        </div>
+    </div>
+
+    <script>
+        // 生成粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化
+        createParticles();
+    </script>
+</body>
+</html>

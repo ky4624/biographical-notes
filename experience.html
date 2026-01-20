@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作经历 - 科技感简历</title>
+    <style>
+        /* 与personal.html相同的基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 50px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #00ffff;
+            font-size: 36px;
+        }
+
+        .experience-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .experience-item h2 {
+            color: #00ffcc;
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        .experience-item .position {
+            color: #ffffff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .experience-item .time {
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .experience-item .description {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        .experience-item .description ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-50px) translateX(100px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-150px) translateX(150px);
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 返回按钮 -->
+    <a href="index.html" class="back-btn">返回正方体</a>
+
+    <!-- 内容容器 -->
+    <div class="content">
+        <h1>工作经历</h1>
+        
+        <div class="experience-item">
+            <h2>科技公司A</h2>
+            <div class="position">高级前端开发工程师</div>
+            <div class="time">2020年3月 - 至今</div>
+            <div class="description">
+                负责公司核心产品的前端架构设计与开发
+                <ul>
+                    <li>使用Vue.js技术栈构建企业级应用</li>
+                    <li>优化前端性能，页面加载速度提升50%</li>
+                    <li>带领5人开发团队，完成多个重要项目</li>
+                    <li>制定前端开发规范，提升团队开发效率</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="experience-item">
+            <h2>科技公司B</h2>
+            <div class="position">前端开发工程师</div>
+            <div class="time">2018年8月 - 2020年2月</div>
+            <div class="description">
+                参与多个Web项目的前端开发工作
+                <ul>
+                    <li>使用React框架开发单页应用</li>
+                    <li>与后端团队协作，实现RESTful API对接</li>
+                    <li>负责响应式设计，确保多端适配</li>
+                    <li>解决浏览器兼容性问题</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="experience-item">
+            <h2>科技公司C</h2>
+            <div class="position">前端开发实习生</div>
+            <div class="time">2017年12月 - 2018年7月</div>
+            <div class="description">
+                协助完成公司网站的维护与更新
+                <ul>
+                    <li>学习并应用HTML5/CSS3/JavaScript技术</li>
+                    <li>参与页面重构，提升用户体验</li>
+                    <li>学习前端开发流程与版本控制</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 生成粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化
+        createParticles();
+    </script>
+</body>
+</html>

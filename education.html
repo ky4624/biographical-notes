@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学校 - 科技感简历</title>
+    <style>
+        /* 与personal.html相同的基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 50px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #00ffff;
+            font-size: 36px;
+        }
+
+        .education-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border-left: 4px solid #00ffff;
+        }
+
+        .education-item h2 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .education-item .degree {
+            color: #ffffff;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .education-item .time {
+            color: #00ffff;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .education-item .description {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-50px) translateX(100px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-150px) translateX(150px);
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 返回按钮 -->
+    <a href="index.html" class="back-btn">返回正方体</a>
+
+    <!-- 内容容器 -->
+    <div class="content">
+        <h1>教育经历</h1>
+        
+        <div class="education-item">
+            <h2>清华大学</h2>
+            <div class="degree">计算机科学与技术 硕士</div>
+            <div class="time">2015年9月 - 2018年7月</div>
+            <div class="description">
+                主修课程：Web前端开发、人工智能、数据结构与算法<br>
+                研究方向：前端性能优化与用户体验<br>
+                获得荣誉：优秀毕业生、国家奖学金
+            </div>
+        </div>
+        
+        <div class="education-item">
+            <h2>北京大学</h2>
+            <div class="degree">计算机科学与技术 本科</div>
+            <div class="time">2011年9月 - 2015年7月</div>
+            <div class="description">
+                主修课程：HTML/CSS/JavaScript、数据库原理、计算机网络<br>
+                获得荣誉：三好学生、一等奖学金<br>
+                社团经历：计算机协会主席
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 生成粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化
+        createParticles();
+    </script>
+</body>
+</html>

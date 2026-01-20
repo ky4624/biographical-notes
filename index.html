@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科技感3D正方体简历</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 科技感背景粒子效果 */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-50px) translateX(100px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-150px) translateX(150px);
+                opacity: 0.5;
+            }
+        }
+
+        /* 3D容器 */
+        .container {
+            perspective: 1000px;
+            z-index: 1;
+        }
+
+        /* 正方体 */
+        .cube {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear;
+            cursor: pointer;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            100% {
+                transform: rotateX(360deg) rotateY(360deg);
+            }
+        }
+
+        /* 正方体的面 */
+        .face {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .face:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 20px #00ffff;
+            transform: scale(1.05);
+        }
+
+        /* 6个面的位置 */
+        .front { transform: translateZ(150px); }
+        .back { transform: rotateY(180deg) translateZ(150px); }
+        .left { transform: rotateY(-90deg) translateZ(150px); }
+        .right { transform: rotateY(90deg) translateZ(150px); }
+        .top { transform: rotateX(90deg) translateZ(150px); }
+        .bottom { transform: rotateX(-90deg) translateZ(150px); }
+
+        /* 标题样式 */
+        .face h2 {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* 悬浮控制按钮 */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 3D正方体容器 -->
+    <div class="container">
+        <div class="cube" id="cube">
+            <a href="personal.html" class="face front"><h2>个人信息</h2></a>
+            <a href="education.html" class="face back"><h2>学校</h2></a>
+            <a href="skills.html" class="face left"><h2>技能</h2></a>
+            <a href="experience.html" class="face right"><h2>工作经历</h2></a>
+            <a href="achievements.html" class="face top"><h2>成果</h2></a>
+            <a href="pending.html" class="face bottom"><h2>待定</h2></a>
+        </div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+        <button class="control-btn" onclick="toggleRotation()">暂停/继续</button>
+        <button class="control-btn" onclick="resetRotation()">重置视角</button>
+    </div>
+
+    <script>
+        // 生成粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 暂停/继续旋转
+        let isRotating = true;
+        const cube = document.getElementById('cube');
+
+        function toggleRotation() {
+            if (isRotating) {
+                cube.style.animationPlayState = 'paused';
+                isRotating = false;
+            } else {
+                cube.style.animationPlayState = 'running';
+                isRotating = true;
+            }
+        }
+
+        // 重置视角
+        function resetRotation() {
+            cube.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            setTimeout(() => {
+                cube.style.animationPlayState = 'running';
+                isRotating = true;
+            }, 500);
+        }
+
+        // 鼠标拖拽旋转
+        let isDragging = false;
+        let startX, startY;
+        let currentX = 0, currentY = 0;
+
+        cube.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            cube.style.animationPlayState = 'paused';
+            isRotating = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            currentY += deltaX * 0.5;
+            currentX += deltaY * 0.5;
+            
+            cube.style.transform = `rotateX(${-currentX}deg) rotateY(${currentY}deg)`;
+            
+            startX = e.clientX;
+            startY = e.clientY;
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // 初始化
+        createParticles();
+    </script>
+</body>
+</html>

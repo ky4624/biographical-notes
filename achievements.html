@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>成果 - 科技感简历</title>
+    <style>
+        /* 与personal.html相同的基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: #00ffff;
+            min-height: 100vh;
+            padding: 50px;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px #00ffff;
+            font-size: 36px;
+        }
+
+        .achievement-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .achievement-item h2 {
+            color: #00ffcc;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .achievement-item .date {
+            color: #00ffff;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .achievement-item .description {
+            color: #cccccc;
+            line-height: 1.6;
+        }
+
+        /* 粒子效果 */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #00ffff;
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateY(-50px) translateX(100px);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(-150px) translateX(150px);
+                opacity: 0.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 返回按钮 -->
+    <a href="index.html" class="back-btn">返回正方体</a>
+
+    <!-- 内容容器 -->
+    <div class="content">
+        <h1>项目成果</h1>
+        
+        <div class="achievement-item">
+            <h2>企业管理系统</h2>
+            <div class="date">2021年5月 - 2022年2月</div>
+            <div class="description">
+                设计并开发了一套完整的企业管理系统，包含人事管理、财务管理、项目管理等模块。
+                使用Vue.js + Element UI技术栈，实现了前后端分离架构。系统上线后，帮助企业提升了30%的管理效率。
+            </div>
+        </div>
+        
+        <div class="achievement-item">
+            <h2>电商平台重构</h2>
+            <div class="date">2019年8月 - 2020年1月</div>
+            <div class="description">
+                参与了公司电商平台的前端重构项目，使用React + Redux技术栈。
+                优化了用户界面和交互体验，页面加载速度提升40%，用户转化率提升15%。
+            </div>
+        </div>
+        
+        <div class="achievement-item">
+            <h2>移动端APP</h2>
+            <div class="date">2018年10月 - 2019年5月</div>
+            <div class="description">
+                使用uni-app框架开发了跨平台移动端APP，支持iOS和Android系统。
+                实现了商品浏览、在线支付、消息推送等功能，下载量突破10万。
+            </div>
+        </div>
+        
+        <div class="achievement-item">
+            <h2>技术专利</h2>
+            <div class="date">2022年6月</div>
+            <div class="description">
+                申请并获得了一项关于前端性能优化的技术专利，专利号：ZL2022XXXXXXXXX。
+                该专利技术可以有效提升大型Web应用的加载速度和运行效率。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 生成粒子背景
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 初始化
+        createParticles();
+    </script>
+</body>
+</html>
