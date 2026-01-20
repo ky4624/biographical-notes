@@ -16,8 +16,6 @@
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
             position: relative;
         }
@@ -60,16 +58,25 @@
             }
         }
 
+        /* 全屏3D区域 */
+        .full-screen-panel {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
         /* 3D容器 */
         .container {
             perspective: 1000px;
-            z-index: 1;
         }
 
         /* 正方体 */
         .cube {
-            width: 300px;
-            height: 300px;
+            width: 350px;
+            height: 350px;
             position: relative;
             transform-style: preserve-3d;
             animation: rotate 20s infinite linear;
@@ -88,19 +95,20 @@
         /* 正方体的面 */
         .face {
             position: absolute;
-            width: 300px;
-            height: 300px;
+            width: 350px;
+            height: 350px;
             background: rgba(0, 255, 255, 0.1);
             border: 2px solid #00ffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             color: #00ffff;
             text-shadow: 0 0 10px #00ffff;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
+            text-decoration: none;
         }
 
         .face:hover {
@@ -110,12 +118,12 @@
         }
 
         /* 6个面的位置 */
-        .front { transform: translateZ(150px); }
-        .back { transform: rotateY(180deg) translateZ(150px); }
-        .left { transform: rotateY(-90deg) translateZ(150px); }
-        .right { transform: rotateY(90deg) translateZ(150px); }
-        .top { transform: rotateX(90deg) translateZ(150px); }
-        .bottom { transform: rotateX(-90deg) translateZ(150px); }
+        .front { transform: translateZ(175px); }
+        .back { transform: rotateY(180deg) translateZ(175px); }
+        .left { transform: rotateY(-90deg) translateZ(175px); }
+        .right { transform: rotateY(90deg) translateZ(175px); }
+        .top { transform: rotateX(90deg) translateZ(175px); }
+        .bottom { transform: rotateX(-90deg) translateZ(175px); }
 
         /* 标题样式 */
         .face h2 {
@@ -158,23 +166,31 @@
     <!-- 粒子背景 -->
     <div class="particles" id="particles"></div>
 
-    <!-- 3D正方体容器 -->
-    <div class="container">
-        <div class="cube" id="cube">
-            <a href="personal.html" class="face front"><h2>个人信息</h2></a>
-            <a href="education.html" class="face back"><h2>学校</h2></a>
-            <a href="skills.html" class="face left"><h2>技能</h2></a>
-            <a href="experience.html" class="face right"><h2>工作经历</h2></a>
-            <a href="achievements.html" class="face top"><h2>成果</h2></a>
-            <a href="pending.html" class="face bottom"><h2>待定</h2></a>
+    <!-- 全屏3D区域 -->
+    <div class="full-screen-panel">
+        <div class="container">
+            <div class="cube" id="cube">
+                <a href="personal.html" class="face front"><h2>个人信息</h2></a>
+                <a href="education.html" class="face back"><h2>学校</h2></a>
+                <a href="skills.html" class="face left"><h2>技能</h2></a>
+                <a href="experience.html" class="face right"><h2>工作经历</h2></a>
+                <a href="achievements.html" class="face top"><h2>成果</h2></a>
+                <a href="pending.html" class="face bottom"><h2>下载简历</h2></a>
+            </div>
+        </div>
+
+        <!-- 控制按钮 -->
+        <div class="controls">
+            <button class="control-btn" onclick="toggleRotation()">暂停/继续</button>
+            <button class="control-btn" onclick="resetRotation()">重置视角</button>
         </div>
     </div>
 
-    <!-- 控制按钮 -->
-    <div class="controls">
-        <button class="control-btn" onclick="toggleRotation()">暂停/继续</button>
-        <button class="control-btn" onclick="resetRotation()">重置视角</button>
-    </div>
+    <!-- 背景音乐 -->
+    <audio id="bgm" loop>
+        <source src="static/bgm.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
 
     <script>
         // 生成粒子背景
@@ -220,6 +236,11 @@
         let currentX = 0, currentY = 0;
 
         cube.addEventListener('mousedown', (e) => {
+            // 检查点击的是不是链接
+            if (e.target.closest('a')) {
+                return; // 如果是链接，不阻止默认行为
+            }
+            
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;
@@ -244,6 +265,23 @@
 
         document.addEventListener('mouseup', () => {
             isDragging = false;
+        });
+
+        // 背景音乐控制
+        const bgm = document.getElementById('bgm');
+        let musicStarted = false;
+        let isMusicPlaying = false;
+
+        // 点击任意位置播放背景音乐
+        document.addEventListener('click', () => {
+            if (!musicStarted) {
+                bgm.play().then(() => {
+                    musicStarted = true;
+                    isMusicPlaying = true;
+                }).catch(error => {
+                    console.log('音乐播放失败:', error);
+                });
+            }
         });
 
         // 初始化

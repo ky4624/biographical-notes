@@ -149,41 +149,11 @@
         <h1>技能展示</h1>
         
         <div class="skills-section">
-            <h2>前端技术</h2>
+            <h2>专业技能</h2>
             
             <div class="skill-item">
                 <div class="skill-name">
-                    <span>HTML5/CSS3</span>
-                    <span>95%</span>
-                </div>
-                <div class="skill-bar">
-                    <div class="skill-progress" style="width: 95%"></div>
-                </div>
-            </div>
-            
-            <div class="skill-item">
-                <div class="skill-name">
-                    <span>JavaScript</span>
-                    <span>90%</span>
-                </div>
-                <div class="skill-bar">
-                    <div class="skill-progress" style="width: 90%"></div>
-                </div>
-            </div>
-            
-            <div class="skill-item">
-                <div class="skill-name">
-                    <span>Vue.js</span>
-                    <span>85%</span>
-                </div>
-                <div class="skill-bar">
-                    <div class="skill-progress" style="width: 85%"></div>
-                </div>
-            </div>
-            
-            <div class="skill-item">
-                <div class="skill-name">
-                    <span>React</span>
+                    <span>Python</span>
                     <span>80%</span>
                 </div>
                 <div class="skill-bar">
@@ -193,45 +163,75 @@
             
             <div class="skill-item">
                 <div class="skill-name">
-                    <span>Node.js</span>
-                    <span>75%</span>
+                    <span>MySQL</span>
+                    <span>60%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 75%"></div>
+                    <div class="skill-progress" style="width: 60%"></div>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <div class="skill-name">
+                    <span>MongoDB</span>
+                    <span>60%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 60%"></div>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <div class="skill-name">
+                    <span>VBA</span>
+                    <span>40%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 40%"></div>
                 </div>
             </div>
         </div>
         
         <div class="skills-section">
-            <h2>其他技能</h2>
+            <h2>工具技能</h2>
             
             <div class="skill-item">
                 <div class="skill-name">
-                    <span>UI/UX设计</span>
-                    <span>70%</span>
+                    <span>Photoshop</span>
+                    <span>60%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 70%"></div>
+                    <div class="skill-progress" style="width: 60%"></div>
                 </div>
             </div>
             
             <div class="skill-item">
                 <div class="skill-name">
-                    <span>项目管理</span>
-                    <span>65%</span>
+                    <span>Flash</span>
+                    <span>45%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 65%"></div>
+                    <div class="skill-progress" style="width: 45%"></div>
                 </div>
             </div>
             
             <div class="skill-item">
                 <div class="skill-name">
-                    <span>英语</span>
-                    <span>85%</span>
+                    <span>剪映</span>
+                    <span>45%</span>
                 </div>
                 <div class="skill-bar">
-                    <div class="skill-progress" style="width: 85%"></div>
+                    <div class="skill-progress" style="width: 45%"></div>
+                </div>
+            </div>
+            
+            <div class="skill-item">
+                <div class="skill-name">
+                    <span>Excel函数</span>
+                    <span>88%</span>
+                </div>
+                <div class="skill-bar">
+                    <div class="skill-progress" style="width: 88%"></div>
                 </div>
             </div>
         </div>
@@ -252,13 +252,17 @@
             }
         }
 
-        // 技能条动画
+        // 技能条动画 - 修复版本
         window.addEventListener('load', () => {
             const progressBars = document.querySelectorAll('.skill-progress');
             progressBars.forEach(bar => {
+                // 先保存原始宽度
+                const originalWidth = bar.style.width;
+                // 设置为0%
                 bar.style.width = '0%';
+                // 延迟后恢复原始宽度
                 setTimeout(() => {
-                    bar.style.width = bar.getAttribute('style').replace('width: ', '').replace(';', '');
+                    bar.style.width = originalWidth;
                 }, 500);
             });
         });
