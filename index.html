@@ -34,6 +34,7 @@
             position: relative;
             transform-style: preserve-3d;
             animation: rotate 20s infinite linear;
+            transition: transform 0.6s ease;
         }
 
         @keyframes rotate {
@@ -56,6 +57,7 @@
             text-shadow: 0 0 10px #00ffff;
             backdrop-filter: blur(5px);
             cursor: pointer;
+            transition: transform 0.6s ease;
         }
 
         .front { transform: translateZ(175px); }
@@ -64,6 +66,26 @@
         .right { transform: rotateY(90deg) translateZ(175px); }
         .top { transform: rotateX(90deg) translateZ(175px); }
         .bottom { transform: rotateX(-90deg) translateZ(175px); }
+
+        /* 展开状态的样式 - 6个面水平平铺，上面3个下面3个整齐排列 */
+        .cube.expanded .front { 
+            transform: rotateX(0deg) rotateY(0deg) translateZ(175px) translateX(0) translateY(-175px); 
+        }
+        .cube.expanded .left { 
+            transform: rotateX(0deg) rotateY(0deg) translateZ(175px) translateX(-350px) translateY(-175px); 
+        }
+        .cube.expanded .right { 
+            transform: rotateX(0deg) rotateY(0deg) translateZ(175px) translateX(350px) translateY(-175px); 
+        }
+        .cube.expanded .top { 
+            transform: rotateX(0deg) rotateY(0deg) translateZ(175px) translateX(-350px) translateY(175px); 
+        }
+        .cube.expanded .back { 
+            transform: rotateX(0deg) rotateY(0deg) translateZ(175px) translateX(0) translateY(175px); 
+        }
+        .cube.expanded .bottom { 
+            transform: rotateX(0deg) rotateY(0deg) translateZ(175px) translateX(350px) translateY(175px); 
+        }
 
         .controls {
             position: absolute;
@@ -89,6 +111,9 @@
     </style>
 </head>
 <body>
+    <!-- 背景音乐播放器 -->
+    <iframe id="musicFrame" src="music-player.html" style="display: none; width: 0; height: 0; border: 0;"></iframe>
+    
     <div class="container" id="cubeContainer">
         <div class="cube" id="cube">
             <div class="face front" data-href="personal.html">个人信息</div>
@@ -103,6 +128,7 @@
     <div class="controls">
         <button class="control-btn" onclick="toggleRotation()">暂停/继续</button>
         <button class="control-btn" onclick="resetRotation()">重置视角</button>
+        <button class="control-btn" onclick="toggleExpand()">展开/集合</button>
     </div>
 
     <script>
@@ -112,6 +138,41 @@
         let lastX, lastY; // 记录上一次的鼠标/触摸位置
         let currentRotationX = 0; // 累计X轴旋转角度
         let currentRotationY = 0; // 累计Y轴旋转角度
+        let isExpanded = false; // 展开状态标志
+        
+        // 页面加载完成后
+        window.addEventListener('load', () => {
+            // 获取音乐iframe
+            const musicFrame = document.getElementById('musicFrame');
+            
+            // 点击页面任意位置发送播放音乐指令
+            document.addEventListener('click', () => {
+                if (musicFrame && musicFrame.contentWindow) {
+                    musicFrame.contentWindow.postMessage('playMusic', '*');
+                }
+            }, { once: true });
+        });
+
+        // 页面加载时恢复展开状态
+        window.addEventListener('load', () => {
+            // 从localStorage获取保存的展开状态
+            const savedExpandedState = localStorage.getItem('cubeExpandedState');
+            if (savedExpandedState === 'true') {
+                isExpanded = true;
+                cube.classList.add('expanded');
+                cube.style.animationPlayState = 'paused';
+            }
+
+            // 获取音乐iframe
+            const musicFrame = document.getElementById('musicFrame');
+            
+            // 点击页面任意位置发送播放音乐指令
+            document.addEventListener('click', () => {
+                if (musicFrame && musicFrame.contentWindow) {
+                    musicFrame.contentWindow.postMessage('playMusic', '*');
+                }
+            }, { once: true });
+        });
 
         // 暂停/继续自动旋转
         function toggleRotation() {
@@ -124,6 +185,28 @@
             currentRotationY = 0;
             cube.style.transform = 'rotateX(0deg) rotateY(0deg)';
             cube.style.animationPlayState = 'running';
+        }
+
+        // 展开/集合正方体
+        function toggleExpand() {
+            isExpanded = !isExpanded;
+            
+            // 保存展开状态到localStorage
+            localStorage.setItem('cubeExpandedState', isExpanded);
+            
+            if (isExpanded) {
+                // 立即重置旋转角度并展开，确保无论当前旋转到什么角度都能正确展开
+                currentRotationX = 0;
+                currentRotationY = 0;
+                cube.style.transform = 'rotateX(0deg) rotateY(0deg)';
+                
+                // 立即添加展开类，不使用延迟，确保展开布局不受旋转影响
+                cube.classList.add('expanded');
+                cube.style.animationPlayState = 'paused'; // 展开后停止自转
+            } else {
+                cube.classList.remove('expanded');
+                cube.style.animationPlayState = 'running'; // 集合后恢复自转
+            }
         }
 
         // ========== 鼠标拖动逻辑（仅绑定到正方体容器） ==========
@@ -171,6 +254,7 @@
 
         // ========== 触屏拖动逻辑（仅绑定到正方体容器） ==========
         cubeContainer.addEventListener('touchstart', (e) => {
+            // 排除点击正方体的面（避免和跳转冲突）
             if (e.target.classList.contains('face')) return;
             
             isDragging = true;
@@ -206,13 +290,15 @@
             }
         });
 
-        // ========== 正方体面点击跳转（保留） ==========
+        // ========== 正方体面点击跳转（正常工作） ==========
         document.querySelectorAll('.face').forEach(face => {
             face.addEventListener('click', (e) => {
                 const href = face.getAttribute('data-href');
                 if (href) {
-                    // window.location.href = href; // 测试阶段可注释，避免跳转
-                    console.log('点击了：', href); // 测试用，看是否触发
+                    // 保存展开状态到localStorage，确保返回时能恢复
+                    localStorage.setItem('cubeExpandedState', isExpanded);
+                    window.location.href = href; // 点击跳转功能已启用
+                    // console.log('点击了：', href); // 测试用，已注释
                 }
                 e.stopPropagation(); // 阻止触发拖动事件
             });

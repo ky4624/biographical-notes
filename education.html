@@ -129,6 +129,8 @@
     </style>
 </head>
 <body>
+    <!-- 背景音乐播放器 -->
+    <iframe src="music-player.html" style="display: none; width: 0; height: 0; border: 0;"></iframe>
     <!-- 粒子背景 -->
     <div class="particles" id="particles"></div>
 
@@ -154,6 +156,18 @@
     </div>
 
     <script>
+        // 页面加载完成后
+        window.addEventListener('load', () => {
+            // 获取音乐iframe
+            const musicFrame = document.getElementById('musicFrame');
+            
+            // 点击页面任意位置发送播放音乐指令
+            document.addEventListener('click', () => {
+                if (musicFrame && musicFrame.contentWindow) {
+                    musicFrame.contentWindow.postMessage('playMusic', '*');
+                }
+            }, { once: true });
+        });
         // 生成粒子背景
         function createParticles() {
             const particlesContainer = document.getElementById('particles');

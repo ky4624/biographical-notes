@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背景音乐播放器</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <audio id="bgm" loop>
+        <source src="static/bgm.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放
+    </audio>
+
+    <script>
+        const bgm = document.getElementById('bgm');
+        let musicStarted = false;
+        let timeUpdateInterval;
+
+        // 监听主页面发送的消息
+        window.addEventListener('message', (event) => {
+            if (event.data === 'playMusic') {
+                playMusic();
+            }
+        });
+
+        // 播放音乐函数
+        function playMusic() {
+            if (!musicStarted) {
+                // 恢复上次播放位置
+                const savedTime = localStorage.getItem('musicPlayTime');
+                if (savedTime) {
+                    bgm.currentTime = parseFloat(savedTime);
+                }
+                
+                bgm.play().then(() => {
+                    musicStarted = true;
+                    localStorage.setItem('musicStarted', 'true');
+                    startTimeUpdate(); // 开始定期保存播放时间
+                }).catch(error => {
+                    console.error('音乐播放失败:', error);
+                });
+            }
+        }
+
+        // 定期保存播放时间
+        function startTimeUpdate() {
+            timeUpdateInterval = setInterval(() => {
+                localStorage.setItem('musicPlayTime', bgm.currentTime.toString());
+            }, 1000); // 每秒保存一次
+        }
+
+        // 停止保存播放时间
+        function stopTimeUpdate() {
+            clearInterval(timeUpdateInterval);
+        }
+
+        // 检查是否已经开始播放
+        if (localStorage.getItem('musicStarted')) {
+            musicStarted = true;
+            // 恢复上次播放位置
+            const savedTime = localStorage.getItem('musicPlayTime');
+            if (savedTime) {
+                bgm.currentTime = parseFloat(savedTime);
+            }
+            bgm.play().then(() => {
+                startTimeUpdate(); // 开始定期保存播放时间
+            }).catch(error => {
+                console.error('音乐恢复播放失败:', error);
+            });
+        }
+
+        // 监听页面可见性变化
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // 页面隐藏时暂停播放并保存时间
+                bgm.pause();
+                stopTimeUpdate();
+                localStorage.setItem('musicPlayTime', bgm.currentTime.toString());
+            } else {
+                // 页面可见时恢复播放
+                if (musicStarted) {
+                    bgm.play().then(() => {
+                        startTimeUpdate(); // 开始定期保存播放时间
+                    }).catch(error => {
+                        console.error('音乐恢复播放失败:', error);
+                    });
+                }
+            }
+        });
+
+        // 页面卸载前保存播放时间
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('musicPlayTime', bgm.currentTime.toString());
+            stopTimeUpdate();
+        });
+    </script>
+</body>
+</html>
