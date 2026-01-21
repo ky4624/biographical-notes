@@ -9,6 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none; /* 全局禁止文本选择 */
         }
 
         body {
@@ -16,56 +17,14 @@
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
             height: 100vh;
             display: flex;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* 科技感背景粒子效果 */
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #00ffff;
-            border-radius: 50%;
-            animation: float 6s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0.7;
-            }
-            25% {
-                transform: translateY(-100px) translateX(50px);
-                opacity: 0.3;
-            }
-            50% {
-                transform: translateY(-50px) translateX(100px);
-                opacity: 1;
-            }
-            75% {
-                transform: translateY(-150px) translateX(150px);
-                opacity: 0.5;
-            }
-        }
-
-        /* 全屏3D区域 */
-        .full-screen-panel {
-            width: 100%;
-            display: flex;
             justify-content: center;
             align-items: center;
-            position: relative;
-            z-index: 1;
+            overflow: hidden;
+            cursor: grab;
+        }
+
+        body:active {
+            cursor: grabbing;
         }
 
         /* 3D容器 */
@@ -80,16 +39,11 @@
             position: relative;
             transform-style: preserve-3d;
             animation: rotate 20s infinite linear;
-            cursor: pointer;
         }
 
         @keyframes rotate {
-            0% {
-                transform: rotateX(0deg) rotateY(0deg);
-            }
-            100% {
-                transform: rotateX(360deg) rotateY(360deg);
-            }
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
         }
 
         /* 正方体的面 */
@@ -108,13 +62,7 @@
             text-shadow: 0 0 10px #00ffff;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
-            text-decoration: none;
-        }
-
-        .face:hover {
-            background: rgba(0, 255, 255, 0.2);
-            box-shadow: 0 0 20px #00ffff;
-            transform: scale(1.05);
+            cursor: pointer;
         }
 
         /* 6个面的位置 */
@@ -125,24 +73,12 @@
         .top { transform: rotateX(90deg) translateZ(175px); }
         .bottom { transform: rotateX(-90deg) translateZ(175px); }
 
-        /* 标题样式 */
-        .face h2 {
-            text-align: center;
-            padding: 20px;
-            border: 2px solid rgba(0, 255, 255, 0.5);
-            border-radius: 10px;
-            background: rgba(0, 0, 0, 0.3);
-        }
-
         /* 悬浮控制按钮 */
         .controls {
             position: absolute;
             bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             gap: 10px;
-            z-index: 2;
         }
 
         .control-btn {
@@ -155,137 +91,108 @@
             transition: all 0.3s ease;
             font-size: 14px;
         }
-
-        .control-btn:hover {
-            background: rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 10px #00ffff;
-        }
     </style>
 </head>
 <body>
-    <!-- 粒子背景 -->
-    <div class="particles" id="particles"></div>
-
-    <!-- 全屏3D区域 -->
-    <div class="full-screen-panel">
-        <div class="container">
-            <div class="cube" id="cube">
-                <a href="personal.html" class="face front"><h2>个人信息</h2></a>
-                <a href="education.html" class="face back"><h2>学校</h2></a>
-                <a href="skills.html" class="face left"><h2>技能</h2></a>
-                <a href="experience.html" class="face right"><h2>工作经历</h2></a>
-                <a href="achievements.html" class="face top"><h2>成果</h2></a>
-                <a href="pending.html" class="face bottom"><h2>下载简历</h2></a>
-            </div>
-        </div>
-
-        <!-- 控制按钮 -->
-        <div class="controls">
-            <button class="control-btn" onclick="toggleRotation()">暂停/继续</button>
-            <button class="control-btn" onclick="resetRotation()">重置视角</button>
+    <div class="container">
+        <div class="cube" id="cube">
+            <div class="face front" data-href="personal.html">个人信息</div>
+            <div class="face back" data-href="education.html">教育经历</div>
+            <div class="face left" data-href="skills.html">技能</div>
+            <div class="face right" data-href="experience.html">工作经历</div>
+            <div class="face top" data-href="achievements.html">待定</div>
+            <div class="face bottom" data-href="pending.html">下载简历</div>
         </div>
     </div>
 
-    <!-- 背景音乐 -->
-    <audio id="bgm" loop>
-        <source src="static/bgm.mp3" type="audio/mpeg">
-        您的浏览器不支持音频播放
-    </audio>
+    <div class="controls">
+        <button class="control-btn" onclick="toggleRotation()">暂停/继续</button>
+        <button class="control-btn" onclick="resetRotation()">重置视角</button>
+    </div>
 
     <script>
-        // 生成粒子背景
-        function createParticles() {
-            const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 6 + 's';
-                particle.style.animationDuration = (Math.random() * 6 + 4) + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
+        // 初始化变量
+        const cube = document.getElementById('cube');
+        let isDragging = false;
+        let startX, startY;
+        let currentRotationX = 0;
+        let currentRotationY = 0;
+        let hasMoved = false; // 标记是否发生了移动
 
         // 暂停/继续旋转
-        let isRotating = true;
-        const cube = document.getElementById('cube');
-
         function toggleRotation() {
-            if (isRotating) {
-                cube.style.animationPlayState = 'paused';
-                isRotating = false;
-            } else {
-                cube.style.animationPlayState = 'running';
-                isRotating = true;
-            }
+            const isPaused = cube.style.animationPlayState === 'paused';
+            cube.style.animationPlayState = isPaused ? 'running' : 'paused';
         }
 
         // 重置视角
         function resetRotation() {
+            currentRotationX = 0;
+            currentRotationY = 0;
             cube.style.transform = 'rotateX(0deg) rotateY(0deg)';
-            setTimeout(() => {
-                cube.style.animationPlayState = 'running';
-                isRotating = true;
-            }, 500);
+            cube.style.animationPlayState = 'running';
         }
 
-        // 鼠标拖拽旋转
-        let isDragging = false;
-        let startX, startY;
-        let currentX = 0, currentY = 0;
-
-        cube.addEventListener('mousedown', (e) => {
-            // 检查点击的是不是链接
-            if (e.target.closest('a')) {
-                return; // 如果是链接，不阻止默认行为
-            }
+        // 鼠标按下事件 - 整个文档
+        document.addEventListener('mousedown', function(e) {
+            // 排除控制按钮
+            if (e.target.closest('.control-btn')) return;
             
             isDragging = true;
+            hasMoved = false; // 重置移动标记
             startX = e.clientX;
             startY = e.clientY;
-            cube.style.animationPlayState = 'paused';
-            isRotating = false;
         });
 
-        document.addEventListener('mousemove', (e) => {
+        // 鼠标移动事件
+        document.addEventListener('mousemove', function(e) {
             if (!isDragging) return;
-            
+
+            // 计算移动距离
             const deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
-            
-            currentY += deltaX * 0.5;
-            currentX += deltaY * 0.5;
-            
-            cube.style.transform = `rotateX(${-currentX}deg) rotateY(${currentY}deg)`;
-            
-            startX = e.clientX;
-            startY = e.clientY;
+
+            // 只有当移动距离超过一定阈值时才视为拖动
+            if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
+                hasMoved = true;
+                // 第一次检测到移动时暂停自动旋转
+                if (cube.style.animationPlayState !== 'paused') {
+                    cube.style.animationPlayState = 'paused';
+                }
+
+                // 更新旋转角度
+                currentRotationY += deltaX * 0.5;
+                currentRotationX += deltaY * 0.5;
+
+                // 应用旋转
+                cube.style.transform = `rotateX(${-currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+
+                // 更新起始位置
+                startX = e.clientX;
+                startY = e.clientY;
+            }
         });
 
-        document.addEventListener('mouseup', () => {
+        // 鼠标松开事件
+        document.addEventListener('mouseup', function() {
             isDragging = false;
         });
 
-        // 背景音乐控制
-        const bgm = document.getElementById('bgm');
-        let musicStarted = false;
-        let isMusicPlaying = false;
-
-        // 点击任意位置播放背景音乐
-        document.addEventListener('click', () => {
-            if (!musicStarted) {
-                bgm.play().then(() => {
-                    musicStarted = true;
-                    isMusicPlaying = true;
-                }).catch(error => {
-                    console.log('音乐播放失败:', error);
-                });
-            }
+        // 处理正方体面的点击
+        document.querySelectorAll('.face').forEach(function(face) {
+            face.addEventListener('click', function(e) {
+                // 如果发生了移动，不视为点击
+                if (hasMoved) {
+                    hasMoved = false;
+                    return;
+                }
+                
+                const href = this.getAttribute('data-href');
+                if (href) {
+                    window.location.href = href;
+                }
+            });
         });
-
-        // 初始化
-        createParticles();
     </script>
 </body>
 </html>
