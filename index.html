@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* 全局禁止文本选择 */
+            user-select: none;
         }
 
         body {
@@ -20,19 +20,14 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            cursor: grab;
+            cursor: default; /* 恢复默认鼠标样式 */
         }
 
-        body:active {
-            cursor: grabbing;
-        }
-
-        /* 3D容器 */
         .container {
             perspective: 1000px;
+            cursor: grab; /* 只有正方体区域显示拖动鼠标 */
         }
 
-        /* 正方体 */
         .cube {
             width: 350px;
             height: 350px;
@@ -46,7 +41,6 @@
             100% { transform: rotateX(360deg) rotateY(360deg); }
         }
 
-        /* 正方体的面 */
         .face {
             position: absolute;
             width: 350px;
@@ -60,12 +54,10 @@
             font-weight: bold;
             color: #00ffff;
             text-shadow: 0 0 10px #00ffff;
-            transition: all 0.3s ease;
             backdrop-filter: blur(5px);
             cursor: pointer;
         }
 
-        /* 6个面的位置 */
         .front { transform: translateZ(175px); }
         .back { transform: rotateY(180deg) translateZ(175px); }
         .left { transform: rotateY(-90deg) translateZ(175px); }
@@ -73,7 +65,6 @@
         .top { transform: rotateX(90deg) translateZ(175px); }
         .bottom { transform: rotateX(-90deg) translateZ(175px); }
 
-        /* 悬浮控制按钮 */
         .controls {
             position: absolute;
             bottom: 20px;
@@ -88,13 +79,17 @@
             color: #00ffff;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s ease;
             font-size: 14px;
+        }
+        
+        /* 只有拖动正方体时改变鼠标样式 */
+        .container.dragging {
+            cursor: grabbing;
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="cubeContainer">
         <div class="cube" id="cube">
             <div class="face front" data-href="personal.html">个人信息</div>
             <div class="face back" data-href="education.html">教育经历</div>
@@ -111,21 +106,19 @@
     </div>
 
     <script>
-        // 初始化变量
         const cube = document.getElementById('cube');
+        const cubeContainer = document.getElementById('cubeContainer'); // 正方体容器
         let isDragging = false;
-        let startX, startY;
-        let currentRotationX = 0;
-        let currentRotationY = 0;
-        let hasMoved = false; // 标记是否发生了移动
+        let lastX, lastY; // 记录上一次的鼠标/触摸位置
+        let currentRotationX = 0; // 累计X轴旋转角度
+        let currentRotationY = 0; // 累计Y轴旋转角度
 
-        // 暂停/继续旋转
+        // 暂停/继续自动旋转
         function toggleRotation() {
-            const isPaused = cube.style.animationPlayState === 'paused';
-            cube.style.animationPlayState = isPaused ? 'running' : 'paused';
+            cube.style.animationPlayState = cube.style.animationPlayState === 'paused' ? 'running' : 'paused';
         }
 
-        // 重置视角
+        // 重置视角到初始状态
         function resetRotation() {
             currentRotationX = 0;
             currentRotationY = 0;
@@ -133,65 +126,104 @@
             cube.style.animationPlayState = 'running';
         }
 
-        // 鼠标按下事件 - 整个文档
-        document.addEventListener('mousedown', function(e) {
-            // 排除控制按钮
-            if (e.target.closest('.control-btn')) return;
+        // ========== 鼠标拖动逻辑（仅绑定到正方体容器） ==========
+        // 按下：只有点击正方体区域才触发
+        cubeContainer.addEventListener('mousedown', (e) => {
+            // 排除点击正方体的面（避免和跳转冲突）
+            if (e.target.classList.contains('face')) return;
             
             isDragging = true;
-            hasMoved = false; // 重置移动标记
-            startX = e.clientX;
-            startY = e.clientY;
+            cubeContainer.classList.add('dragging'); // 改变鼠标样式
+            lastX = e.clientX;
+            lastY = e.clientY;
+            cube.style.animationPlayState = 'paused'; // 拖动时暂停自动旋转
+            e.stopPropagation(); // 阻止事件冒泡
         });
 
-        // 鼠标移动事件
-        document.addEventListener('mousemove', function(e) {
+        // 移动：全局监听，但只在拖动状态生效
+        document.addEventListener('mousemove', (e) => {
             if (!isDragging) return;
+            
+            // 计算本次拖动的偏移量
+            const deltaX = e.clientX - lastX;
+            const deltaY = e.clientY - lastY;
+            
+            // 更新累计旋转角度（灵敏度0.5，可调整）
+            currentRotationY += deltaX * 0.5;
+            currentRotationX += deltaY * 0.5;
+            
+            // 应用旋转效果
+            cube.style.transform = `rotateX(${-currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+            
+            // 更新上一次位置
+            lastX = e.clientX;
+            lastY = e.clientY;
+        });
 
-            // 计算移动距离
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-
-            // 只有当移动距离超过一定阈值时才视为拖动
-            if (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5) {
-                hasMoved = true;
-                // 第一次检测到移动时暂停自动旋转
-                if (cube.style.animationPlayState !== 'paused') {
-                    cube.style.animationPlayState = 'paused';
-                }
-
-                // 更新旋转角度
-                currentRotationY += deltaX * 0.5;
-                currentRotationX += deltaY * 0.5;
-
-                // 应用旋转
-                cube.style.transform = `rotateX(${-currentRotationX}deg) rotateY(${currentRotationY}deg)`;
-
-                // 更新起始位置
-                startX = e.clientX;
-                startY = e.clientY;
+        // 松开：全局监听，结束拖动
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                cubeContainer.classList.remove('dragging');
+                // 松开后不恢复自动旋转，方便查看指定面
             }
         });
 
-        // 鼠标松开事件
-        document.addEventListener('mouseup', function() {
-            isDragging = false;
+        // ========== 触屏拖动逻辑（仅绑定到正方体容器） ==========
+        cubeContainer.addEventListener('touchstart', (e) => {
+            if (e.target.classList.contains('face')) return;
+            
+            isDragging = true;
+            const touch = e.touches[0];
+            lastX = touch.clientX;
+            lastY = touch.clientY;
+            cube.style.animationPlayState = 'paused';
+            e.preventDefault(); // 阻止页面滚动
+            e.stopPropagation();
         });
 
-        // 处理正方体面的点击
-        document.querySelectorAll('.face').forEach(function(face) {
-            face.addEventListener('click', function(e) {
-                // 如果发生了移动，不视为点击
-                if (hasMoved) {
-                    hasMoved = false;
-                    return;
-                }
-                
-                const href = this.getAttribute('data-href');
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - lastX;
+            const deltaY = touch.clientY - lastY;
+            
+            currentRotationY += deltaX * 0.5;
+            currentRotationX += deltaY * 0.5;
+            
+            cube.style.transform = `rotateX(${-currentRotationX}deg) rotateY(${currentRotationY}deg)`;
+            
+            lastX = touch.clientX;
+            lastY = touch.clientY;
+            e.preventDefault();
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                cubeContainer.classList.remove('dragging');
+            }
+        });
+
+        // ========== 正方体面点击跳转（保留） ==========
+        document.querySelectorAll('.face').forEach(face => {
+            face.addEventListener('click', (e) => {
+                const href = face.getAttribute('data-href');
                 if (href) {
-                    window.location.href = href;
+                    // window.location.href = href; // 测试阶段可注释，避免跳转
+                    console.log('点击了：', href); // 测试用，看是否触发
                 }
+                e.stopPropagation(); // 阻止触发拖动事件
             });
+        });
+
+        // ========== 防止空白处点击暂停旋转 ==========
+        document.addEventListener('mousedown', (e) => {
+            // 如果点击的不是正方体容器/按钮，不做任何操作
+            if (!cubeContainer.contains(e.target) && !e.target.classList.contains('control-btn')) {
+                return;
+            }
         });
     </script>
 </body>
